@@ -1,0 +1,38 @@
+From fe139dc1f7050e7c7b59fd489d2d895ceee4c006 Mon Sep 17 00:00:00 2001
+From: Luke Gorrie <luke.gorrie@konghq.com>
+Date: Thu, 20 Jan 2022 09:19:29 +0100
+Subject: [PATCH] tests(perf) docker driver wait until upstream is online
+
+Fix a race condition where performance tests could fail because they
+start before the upstream worker process is reachable.
+---
+ spec/helpers/perf/drivers/docker.lua | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/spec/helpers/perf/drivers/docker.lua b/spec/helpers/perf/drivers/docker.lua
+index 97cf0fd75..e17562d0d 100644
+--- a/spec/helpers/perf/drivers/docker.lua
++++ b/spec/helpers/perf/drivers/docker.lua
+@@ -222,6 +222,19 @@ function _M:start_upstreams(conf, port_count)
+   for i=1,port_count do
+     uris[i] = "http://" .. worker_vip .. ":" .. UPSTREAM_PORT+i-1
+   end
++
++  self.log.info("waiting for worker to be reachable on port " .. UPSTREAM_PORT)
++  local sock = ngx.socket.tcp()
++  for attempt=1,100 do
++     if sock:connect(worker_vip, UPSTREAM_PORT) then
++        self.log.info("worker is reachable on port ", UPSTREAM_PORT)
++        break
++     end
++     ngx.sleep(0.1)
++  end
++  sock:close()
++
++
+   return uris
+ end
+ 
+-- 
+2.34.1
+
