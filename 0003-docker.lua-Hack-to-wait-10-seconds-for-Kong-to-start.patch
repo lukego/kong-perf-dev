@@ -1,0 +1,28 @@
+From 24d2b18ed0cc6500dd34645c9957003f44adb82e Mon Sep 17 00:00:00 2001
+From: Luke Gorrie <luke.gorrie@konghq.com>
+Date: Wed, 26 Jan 2022 16:27:46 +0100
+Subject: [PATCH 3/3] docker.lua: Hack to wait 10 seconds for Kong to start
+ (workaround - should detect)
+
+---
+ spec/helpers/perf/drivers/docker.lua | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/spec/helpers/perf/drivers/docker.lua b/spec/helpers/perf/drivers/docker.lua
+index e2797c662..a805db27d 100644
+--- a/spec/helpers/perf/drivers/docker.lua
++++ b/spec/helpers/perf/drivers/docker.lua
+@@ -296,6 +296,10 @@ function _M:start_kong(version, kong_conf)
+     return false, "timeout waiting kong to start (5s)"
+   end
+   
++  -- ** HACKY WORKAROUND **
++  -- Intention is to wait for Kong to start but didn't immediately see the correct solution.
++  ngx.sleep(10)
++
+   self.log.info("kong is started to listen at port ", proxy_port)
+   return true
+ end
+-- 
+2.34.1
+

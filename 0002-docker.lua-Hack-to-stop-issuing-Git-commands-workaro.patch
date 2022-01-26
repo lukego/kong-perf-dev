@@ -1,0 +1,35 @@
+From b27a9969080bb1d8e86660046ff5688b4399e5b9 Mon Sep 17 00:00:00 2001
+From: Luke Gorrie <luke.gorrie@konghq.com>
+Date: Wed, 26 Jan 2022 16:27:23 +0100
+Subject: [PATCH 2/3] docker.lua: Hack to stop issuing Git commands
+ (workaround)
+
+---
+ spec/helpers/perf/drivers/docker.lua | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/spec/helpers/perf/drivers/docker.lua b/spec/helpers/perf/drivers/docker.lua
+index e17562d0d..e2797c662 100644
+--- a/spec/helpers/perf/drivers/docker.lua
++++ b/spec/helpers/perf/drivers/docker.lua
+@@ -95,7 +95,7 @@ function _M:teardown()
+     end
+   end
+ 
+-  perf.git_restore()
++  --perf.git_restore()
+ 
+   return true
+ end
+@@ -247,7 +247,7 @@ function _M:start_kong(version, kong_conf)
+   local image = "kong"
+ 
+   if version:startswith("git:") then
+-    perf.git_checkout(version:sub(#("git:")+1))
++    --perf.git_checkout(version:sub(#("git:")+1))
+     use_git = true
+ 
+     version = perf.get_kong_version()
+-- 
+2.34.1
+

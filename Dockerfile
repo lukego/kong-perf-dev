@@ -26,6 +26,8 @@ RUN /build-openresty.sh
 # Build kong from source
 ADD build-kong.sh /build-kong.sh
 ADD 0001-tests-perf-docker-driver-wait-until-upstream-is-onli.patch /0001-tests-perf-docker-driver-wait-until-upstream-is-onli.patch
+ADD 0002-docker.lua-Hack-to-stop-issuing-Git-commands-workaro.patch /0002-docker.lua-Hack-to-stop-issuing-Git-commands-workaro.patch
+ADD 0003-docker.lua-Hack-to-wait-10-seconds-for-Kong-to-start.patch /0003-docker.lua-Hack-to-wait-10-seconds-for-Kong-to-start.patch
 RUN /build-kong.sh
 
 ADD execute-perf-test.sh /execute-perf-test.sh
